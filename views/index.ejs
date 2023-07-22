@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        $(document).ready(function (){
+            const socket = io();
+            socket.on('connect', function() {
+                console.log('id ' + socket.id);
+            });
+    
+            socket.on('donation', function(amount) {
+                $('h1').text('Total cash donation ' + amount);
+            });
+    
+            $('#donate').click(function () {
+                socket.emit('donate');
+                socket.emit('beta', 'Someone donated $10');
+            
+            });
+
+            socket.on('updateAllClients', function(data) {
+                console.log('updating all clients', data);
+                $('#messages').append($('<p>').text(data));
+            });
+
+            
+            $('#redeem').click(function () {
+                socket.emit('redeem');
+                socket.emit('beta', 'Someone redeemed $10');
+            });
+        });
+    </script>
+    
+</head>
+<body>
+    <h1>Total cash donation </h1>
+    <p>Give according to one's capacity</p>
+    <p>Take according to one's need</p>
+    <button type="submit" id="donate">Donate $10</button>
+    <button type="submit" id="redeem">Redeem $10</button>
+    <div id="messages">
+    </div>
+</body>
+</html>
